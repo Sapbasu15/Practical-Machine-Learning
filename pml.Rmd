@@ -1,5 +1,32 @@
 # Practical Machine Learning Assignment
-```{r}
-require(caret)
-
+Loading The required Library Files.
+```{r results = 'hold'}
+library(caret)
+library(parallel)
+library(doParallel)
+library(randomForest)
 ```
+
+Loading the Data from the Training Matrix. The dimension is as shown below:
+```{r , }
+training <- read.csv('pml-training.csv',header=T)
+print(dim(training))
+```
+
+As the data contains many fields with NA and "", which may not be useful as features while building a predictor, Its important that we get rid of those noises to get a more clean set of data. Below code removes the unnecessary Fields.
+Dimension after Cleaning the data is as shown :
+
+```{r}
+clean_data <- training[,colSums(is.na(training)) == 0]
+clean_data <- clean_data[,colSums(clean_data=="")== 0]
+d = dim(clean_data)
+```
+
+
+
+```{r}
+```
+
+```{r}
+```
+

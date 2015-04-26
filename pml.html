@@ -63,10 +63,25 @@ img {
 
 <div id="practical-machine-learning-assignment" class="section level1">
 <h1>Practical Machine Learning Assignment</h1>
-<pre class="r"><code>require(caret)</code></pre>
-<pre><code>## Loading required package: caret
-## Loading required package: lattice
+<p>Loading The required Library Files.</p>
+<pre class="r"><code>library(caret)</code></pre>
+<pre><code>## Loading required package: lattice
 ## Loading required package: ggplot2</code></pre>
+<pre class="r"><code>library(parallel)
+library(doParallel)</code></pre>
+<pre><code>## Loading required package: foreach
+## Loading required package: iterators</code></pre>
+<pre class="r"><code>library(randomForest)</code></pre>
+<pre><code>## randomForest 4.6-10
+## Type rfNews() to see new features/changes/bug fixes.</code></pre>
+<p>Loading the Data from the Training Matrix. The dimension is as shown below:</p>
+<pre class="r"><code>training &lt;- read.csv('pml-training.csv',header=T)
+print(dim(training))</code></pre>
+<pre><code>## [1] 19622   160</code></pre>
+<p>As the data contains many fields with NA and “”, which may not be useful as features while building a predictor, Its important that we get rid of those noises to get a more clean set of data. Below code removes the unnecessary Fields. Dimension after Cleaning the data is as shown :</p>
+<pre class="r"><code>clean_data &lt;- training[,colSums(is.na(training)) == 0]
+clean_data &lt;- clean_data[,colSums(clean_data==&quot;&quot;)== 0]
+d = dim(clean_data)</code></pre>
 </div>
 
 
