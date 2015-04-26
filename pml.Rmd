@@ -1,2 +1,5 @@
 # Practical Machine Learning Assignment
+```{r}
+require(caret)
 
+```
