@@ -47,7 +47,7 @@ ndata <- ndata[,-highlyCorrelated[2:length(highlyCorrelated)] ]
 print(dim(ndata))
 ```
 
-The learning model is chosen as Random Forest as its less prone to overfitting the data, Implicit cross validation is there as the best model is chosen considering the error rate in the **Out-Of-Bag(OOB) samples**.
+The learning model is chosen as Random Forest as its less prone to overfitting the data, Implicit **bagging and cross validation** is there as the best model is chosen considering the error rate in the **Out-Of-Bag(OOB) samples**. Explicit resampling and Cross Validation is not required thus.
 
 
 ```{r cache=TRUE}
@@ -63,6 +63,7 @@ print(model)
 The importance of the variable in prediction task as plotted below :
 
 ```{r}
+print(varImp(model))
 varImpPlot(model)
 ```
 

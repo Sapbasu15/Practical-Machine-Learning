@@ -1,2 +1,2 @@
-# Practical Machine Learning Assignment (Yet to complete )
+# Practical Machine Learning Assignment
 
