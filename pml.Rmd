@@ -1,6 +1,6 @@
 # Practical Machine Learning Assignment
 Loading The required Library Files.
-```{r results = 'hold'}
+```{r results = 'hide'}
 library(caret)
 library(parallel)
 library(doParallel)
@@ -8,7 +8,7 @@ library(randomForest)
 ```
 
 Loading the Data from the Training Matrix. The dimension is as shown below:
-```{r , }
+```{r , cache=TRUE}
 training <- read.csv('pml-training.csv',header=T)
 print(dim(training))
 ```
@@ -16,17 +16,60 @@ print(dim(training))
 As the data contains many fields with NA and "", which may not be useful as features while building a predictor, Its important that we get rid of those noises to get a more clean set of data. Below code removes the unnecessary Fields.
 Dimension after Cleaning the data is as shown :
 
-```{r}
+```{r , cache=TRUE}
 clean_data <- training[,colSums(is.na(training)) == 0]
 clean_data <- clean_data[,colSums(clean_data=="")== 0]
 d = dim(clean_data)
 ```
 
+The dimention of the feature matrix is considerably reduced by the cleaning. For further cleaning, the columns with non-numeric values(except the classe outcome) are ignored as their contribution is not that valuable for prediction purpose.Also the first column is removed as its just the serial numbering , not useful feature for predictions and can influence the decision as data is sorted according to class.
 
-
-```{r}
+```{r , cache=TRUE}
+lst = c()
+for (i in 1:(d[2]-1))
+{
+    if(!is.numeric(clean_data[,i]))
+    {
+        lst = c(lst,i)
+    }
+}
+ndata = clean_data[,-lst]
+ndata$X <- NULL
 ```
 
+Preprocessing(center,scaling) is not required as the chosen model of RandomForest is less Sensible to the scaling of the Features.For selecting a subset of useful features, we can observed the highly correlated features and reduce some of the features accordingly. Final dimentions of feature set is as shown :
+
 ```{r}
+correlationMatrix <- cor(ndata[,-56])
+highlyCorrelated <- findCorrelation(correlationMatrix, cutoff=0.8)
+print(highlyCorrelated)
+ndata <- ndata[,-highlyCorrelated[2:length(highlyCorrelated)] ]
+print(dim(ndata))
+```
+
+The learning model is chosen as Random Forest as its less prone to overfitting the data, Implicit cross validation is there as the best model is chosen considering the error rate in the **Out-Of-Bag(OOB) samples**.
+
+
+```{r cache=TRUE}
+cl <- makeCluster(detectCores() - 1)
+registerDoParallel(cl, cores = detectCores() - 1)
+#train_control <- trainControl(method="cv", number=10)
+model = randomForest(classe ~.,data=ndata)
+stopCluster(cl)
+print(model)
+```
+
+**Out-Of-Sample Error rate** (Equivalent to the **Cross Validation Error Rate**) is found to be **0.07%** for Random Forest model on data.
+The importance of the variable in prediction task as plotted below :
+
+```{r}
+varImpPlot(model)
+```
+
+Testing is to be done on the separate test cases. The outcome is as below:
+```{r}
+testing <- read.csv('pml-testing.csv',header = T)
+predi = predict(model,newdata = testing)
+print(predi)
 ```
 
